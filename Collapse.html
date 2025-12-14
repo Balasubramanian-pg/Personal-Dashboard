@@ -1,0 +1,49 @@
+<div class="fade-in h-full">
+    <!-- View Controls -->
+    <div class="flex items-center justify-between mb-6 bg-white p-3 rounded-xl shadow-sm">
+        <div class="flex items-center space-x-2">
+             <h3 class="font-semibold text-gray-700 ml-2">March 2024</h3>
+        </div>
+        <div class="flex space-x-2 text-sm">
+            <button class="px-3 py-1 rounded-md bg-gray-100 text-gray-600">Quarter</button>
+            <button class="px-3 py-1 rounded-md bg-blue-600 text-white">Month</button>
+            <button class="px-3 py-1 rounded-md bg-gray-100 text-gray-600">Week</button>
+        </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+            <p class="text-sm text-gray-500 mb-1">Total Earnings</p>
+            <h3 class="text-2xl font-bold text-gray-800">₹12,000</h3>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+            <p class="text-sm text-gray-500 mb-1">Total Expenses</p>
+            <h3 class="text-2xl font-bold text-gray-800">₹3,450</h3>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+            <p class="text-sm text-gray-500 mb-1">Net Balance</p>
+            <h3 class="text-2xl font-bold text-green-600">₹8,550</h3>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+            <p class="text-sm text-gray-500 mb-1">Current Balance</p>
+            <h3 class="text-2xl font-bold text-purple-600">₹18,115</h3>
+        </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-80">
+            <h3 class="text-lg font-bold text-gray-800 mb-4">Spending vs Earnings</h3>
+            <div class="h-60">
+                <canvas id="donutChart"></canvas>
+            </div>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-80">
+            <h3 class="text-lg font-bold text-gray-800 mb-4">Category Breakdown</h3>
+            <div class="h-60">
+                <canvas id="categoryChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>

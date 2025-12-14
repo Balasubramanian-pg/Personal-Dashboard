@@ -1,0 +1,51 @@
+/* --- FONTS --- */
+/* We import here to guarantee availability if HTML link fails */
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;600;700&family=Afacad:wght@400;500;600&display=swap');
+
+.heading-font { font-family: 'Comfortaa', cursive; }
+body { font-family: 'Afacad', sans-serif; }
+
+/* --- SIDEBAR TRANSITIONS --- */
+#sidebar {
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 260px; /* Default expanded width */
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+#sidebar.collapsed {
+    width: 80px !important; /* Force override */
+}
+
+/* Hide text/elements when collapsed */
+#sidebar.collapsed .hide-on-collapse {
+    opacity: 0;
+    pointer-events: none;
+    display: none; /* remove from flow */
+}
+
+/* Center icons when collapsed */
+#sidebar.collapsed .nav-item {
+    justify-content: center;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+#sidebar.collapsed .logo-container {
+    justify-content: center;
+}
+
+/* --- UTILS --- */
+.navy-blue { color: #1e3a8a; }
+
+/* Nav States */
+.nav-active { background-color: #eff6ff; color: #2563eb; }
+.nav-inactive { color: #4b5563; }
+.nav-inactive:hover { background-color: #f3f4f6; }
+
+/* Animation for loading tabs */
+.fade-in { animation: fadeIn 0.4s ease-out forwards; }
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
