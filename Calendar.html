@@ -1,11 +1,188 @@
-<div class="fade-in w-full h-full bg-white p-6 rounded-xl shadow-sm flex flex-col">
-    <div class="flex items-center space-x-3 mb-6 flex-shrink-0">
-        <svg class="w-6 h-6 navy-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-        </svg>
-        <h3 class="text-lg font-semibold navy-blue">Monthly Calendar</h3>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aesthetic Calendar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Afacad:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Afacad', sans-serif; background-color: #F9FAFB; }
+        
+        /* Custom Scrollbar for event lists within days if they get too long */
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* The Aesthetic Shadow/Ring Combo */
+        .calendar-cell {
+            transition: all 0.2s ease-in-out;
+        }
+        .calendar-cell:hover {
+            z-index: 10;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            transform: scale(1.02);
+            border-radius: 0.75rem;
+            background-color: white;
+        }
+
+        /* Tooltip Animation */
+        .event-tooltip {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px) scale(0.95);
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .event-item:hover .event-tooltip {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+    </style>
+</head>
+<body class="p-10 flex justify-center">
+
+<div class="fade-in w-full max-w-5xl bg-white p-8 rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-gray-900/5 flex flex-col h-auto min-h-[600px]">
+    
+    <!-- Header Section -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+        <div class="flex items-center space-x-4">
+            <div class="p-3 bg-indigo-50 rounded-2xl">
+                <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+            </div>
+            <div>
+                <h3 class="text-2xl font-bold text-gray-900 tracking-tight" id="month-year-display">December 2025</h3>
+                <p class="text-gray-400 text-sm font-medium">3 Events today • 12 upcoming</p>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex items-center gap-3 bg-gray-50 p-1.5 rounded-xl border border-gray-100">
+            <button class="p-2 hover:bg-white hover:shadow-sm rounded-lg text-gray-500 hover:text-gray-900 transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <button class="px-4 py-1.5 bg-white shadow-sm border border-gray-100 rounded-lg text-sm font-semibold text-gray-700 hover:border-gray-300 transition-colors">Today</button>
+            <button class="p-2 hover:bg-white hover:shadow-sm rounded-lg text-gray-500 hover:text-gray-900 transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </button>
+        </div>
     </div>
-    <div id="calendar" class="grid grid-cols-7 gap-2">
-        <!-- JS injects here -->
+
+    <!-- Weekday Headers -->
+    <div class="grid grid-cols-7 mb-4 px-2">
+        <div class="text-gray-400 text-xs font-bold uppercase tracking-widest text-center">Mon</div>
+        <div class="text-gray-400 text-xs font-bold uppercase tracking-widest text-center">Tue</div>
+        <div class="text-gray-400 text-xs font-bold uppercase tracking-widest text-center">Wed</div>
+        <div class="text-gray-400 text-xs font-bold uppercase tracking-widest text-center">Thu</div>
+        <div class="text-gray-400 text-xs font-bold uppercase tracking-widest text-center">Fri</div>
+        <div class="text-gray-400 text-xs font-bold uppercase tracking-widest text-center text-orange-400">Sat</div>
+        <div class="text-gray-400 text-xs font-bold uppercase tracking-widest text-center text-orange-400">Sun</div>
+    </div>
+
+    <!-- Calendar Grid -->
+    <div id="calendar-grid" class="grid grid-cols-7 grid-rows-5 gap-2 h-full flex-grow">
+        <!-- JS Injection Target -->
     </div>
 </div>
+
+<script>
+    const calendarGrid = document.getElementById('calendar-grid');
+    const monthDisplay = document.getElementById('month-year-display');
+
+    // Fake Data for "Aesthetic" events
+    const eventTypes = [
+        { title: 'Tax Review', color: 'bg-red-50 text-red-700 border-red-100', dot: 'bg-red-500' },
+        { title: 'Payout In', color: 'bg-teal-50 text-teal-700 border-teal-100', dot: 'bg-teal-500' },
+        { title: 'Client Call', color: 'bg-indigo-50 text-indigo-700 border-indigo-100', dot: 'bg-indigo-500' },
+        { title: 'Design Sync', color: 'bg-amber-50 text-amber-700 border-amber-100', dot: 'bg-amber-500' }
+    ];
+
+    function renderCalendar() {
+        // Hardcoded for aesthetic demo purposes (Dec 2025)
+        const daysInMonth = 31;
+        const startingDay = 0; // Starts on Monday for demo alignment
+        
+        let html = '';
+        
+        // Previous month padding
+        for(let i = 0; i < startingDay; i++) {
+            html += `<div class="p-2 min-h-[120px] rounded-2xl bg-gray-50/50 border border-transparent"></div>`;
+        }
+
+        // Days
+        for(let day = 1; day <= daysInMonth; day++) {
+            // Randomly decide if today has events
+            const hasEvents = Math.random() > 0.6;
+            const isToday = day === 14; // Fake "Today"
+            
+            // Generate Event HTML
+            let eventsHtml = '';
+            if(hasEvents) {
+                // Add 1 or 2 events
+                const numEvents = Math.floor(Math.random() * 2) + 1;
+                for(let e=0; e<numEvents; e++) {
+                    const type = eventTypes[Math.floor(Math.random() * eventTypes.length)];
+                    
+                    // The Event Pill + Tooltip Logic
+                    eventsHtml += `
+                        <div class="event-item group relative cursor-pointer mt-1">
+                            <!-- Visible Pill -->
+                            <div class="flex items-center gap-1.5 px-2 py-1 rounded-md border ${type.color} text-[10px] font-bold truncate transition-colors hover:brightness-95">
+                                <div class="w-1.5 h-1.5 rounded-full ${type.dot}"></div>
+                                ${type.title}
+                            </div>
+                            
+                            <!-- The Tooltip (Hover State) -->
+                            <div class="event-tooltip absolute z-50 left-1/2 -translate-x-1/2 bottom-[120%] w-48 bg-white p-3 rounded-xl shadow-xl ring-1 ring-gray-900/5 pointer-events-none">
+                                <div class="flex justify-between items-start mb-1">
+                                    <span class="text-xs font-bold text-gray-900">${type.title}</span>
+                                    <span class="text-[10px] text-gray-400">10:00 AM</span>
+                                </div>
+                                <p class="text-[10px] text-gray-500 leading-tight">Discussing Q4 projections and revenue streams.</p>
+                                <div class="mt-2 flex -space-x-1">
+                                    <div class="w-4 h-4 rounded-full bg-gray-200 border border-white"></div>
+                                    <div class="w-4 h-4 rounded-full bg-gray-300 border border-white"></div>
+                                </div>
+                                <!-- Arrow -->
+                                <div class="absolute bottom-[-4px] left-1/2 -translate-x-1/2 w-2 h-2 bg-white rotate-45 border-r border-b border-gray-100"></div>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            // Cell styling
+            const activeClass = isToday ? 'ring-2 ring-indigo-500 bg-indigo-50/30' : 'hover:ring-1 hover:ring-indigo-200';
+            const textClass = isToday ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200' : 'text-gray-700 group-hover:bg-gray-100';
+
+            html += `
+                <div class="calendar-cell group relative flex flex-col justify-start items-start p-2 min-h-[120px] border border-gray-100/80 rounded-2xl bg-white ${activeClass}">
+                    <!-- Date Number & Add Button Header -->
+                    <div class="w-full flex justify-between items-center mb-1">
+                        <span class="flex items-center justify-center w-7 h-7 rounded-full text-sm font-semibold transition-colors ${textClass}">
+                            ${day}
+                        </span>
+                        <!-- Hidden Add Button (Show on hover) -->
+                        <button class="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-gray-100 rounded-full text-gray-400 hover:text-indigo-600">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        </button>
+                    </div>
+                    
+                    <!-- Events Container -->
+                    <div class="w-full flex flex-col gap-1 overflow-visible">
+                        ${eventsHtml}
+                    </div>
+                </div>
+            `;
+        }
+
+        calendarGrid.innerHTML = html;
+    }
+
+    renderCalendar();
+</script>
+
+</body>
+</html>
