@@ -11,26 +11,84 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;600;700&family=Afacad:wght@400;500;600&display=swap" rel="stylesheet">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body class="bg-gray-50 text-gray-800">
+    <link href="https://fonts.googleapis.com/css2?family=Afacad:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Afacad', sans-serif;
+            background-color: #F8FAFC; /* Slate 50 */
+        }
 
-    <div class="flex h-screen w-full overflow-hidden">
+        /* --- Animations --- */
+        .fade-in {
+            animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Aesthetic Card Styles --- */
+        .card-aesthetic {
+            background: white;
+            border-radius: 1.25rem;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 
+                        0 10px 15px -3px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s ease;
+        }
+
+        .card-aesthetic:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 
+                        0 8px 10px -6px rgba(0, 0, 0, 0.01);
+        }
+
+        /* --- Sidebar Transitions --- */
+        #sidebar { transition: width 0.3s ease; }
+        .hide-on-collapse { transition: opacity 0.2s; }
+        .sidebar-collapsed { width: 80px; }
+        .sidebar-collapsed .hide-on-collapse { opacity: 0; pointer-events: none; display: none; }
+        .sidebar-collapsed .logo-container { justify-content: center; }
+        .sidebar-collapsed .nav-item { justify-content: center; padding-left: 0; padding-right: 0; }
+
+        /* --- Nav Active States --- */
+        .nav-active { background-color: #EFF6FF; color: #2563EB; }
+        .nav-inactive { color: #64748B; }
+        .nav-inactive:hover { background-color: #F8FAFC; color: #1E293B; }
+        
+        /* --- Calendar Specifics --- */
+        .calendar-cell:hover {
+            z-index: 10;
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+        .event-tooltip {
+            opacity: 0; visibility: hidden; transition: all 0.2s;
+        }
+        .event-item:hover .event-tooltip {
+            opacity: 1; visibility: visible; bottom: 110%;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 overflow-hidden">
+
+    <div class="flex h-screen w-full">
         
         <!-- SIDEBAR -->
-        <div id="sidebar" class="bg-white shadow-xl h-full flex flex-col justify-between z-50">
+        <div id="sidebar" class="w-64 bg-white shadow-xl h-full flex flex-col justify-between z-50 transition-all duration-300 border-r border-gray-100">
             <div class="p-6 flex flex-col h-full">
                 <!-- Header -->
                 <div class="flex items-center justify-between mb-8 h-10 logo-container">
                     <div class="flex items-center gap-3 overflow-hidden">
-                        <div class="w-8 h-8 flex-shrink-0 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-xl font-sans">C</div>
-                        <h1 class="text-2xl font-bold navy-blue heading-font hide-on-collapse whitespace-nowrap">CashFund</h1>
+                        <div class="w-8 h-8 flex-shrink-0 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">C</div>
+                        <h1 class="text-2xl font-bold text-slate-900 hide-on-collapse whitespace-nowrap">CashFund</h1>
                     </div>
                     <!-- Desktop Collapse Button -->
                     <button onclick="toggleSidebar()" class="hidden lg:block text-gray-400 hover:text-blue-600 transition-colors hide-on-collapse">
-                        <svg id="collapseIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/></svg>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/></svg>
                     </button>
                     <!-- Mobile Close -->
                     <button onclick="toggleSidebar()" class="lg:hidden text-gray-500">
@@ -39,76 +97,404 @@
                 </div>
                 
                 <!-- Nav -->
-                <div class="flex-1 overflow-y-auto overflow-x-hidden">
-                    <div class="mb-4 text-xs font-semibold text-gray-400 uppercase tracking-wider hide-on-collapse">Home</div>
+                <div class="flex-1 overflow-y-auto overflow-x-hidden no-scrollbar">
+                    <div class="mb-4 text-xs font-semibold text-gray-400 uppercase tracking-wider hide-on-collapse">Main Menu</div>
                     <nav class="space-y-2">
-                        <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-lg nav-active transition-all group relative text-left">
+                        <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl nav-active transition-all group relative text-left">
                             <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
                             <span class="font-medium hide-on-collapse whitespace-nowrap">Overview</span>
                         </button>
                         
-                        <button onclick="switchTab('business')" id="nav-business" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-lg nav-inactive transition-all group relative text-left">
+                        <button onclick="switchTab('business')" id="nav-business" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl nav-inactive transition-all group relative text-left">
                             <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                             <span class="font-medium hide-on-collapse whitespace-nowrap">Business</span>
                         </button>
 
-                        <button onclick="switchTab('calendar')" id="nav-calendar" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-lg nav-inactive transition-all group relative text-left">
+                        <button onclick="switchTab('calendar')" id="nav-calendar" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl nav-inactive transition-all group relative text-left">
                             <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                             <span class="font-medium hide-on-collapse whitespace-nowrap">Calendar</span>
                         </button>
                     </nav>
 
                     <!-- Promo Box -->
-                    <div class="mt-8 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-xl p-4 text-white hide-on-collapse transition-all duration-200">
-                        <div class="mb-2 bg-white/20 w-8 h-8 rounded flex items-center justify-center">
+                    <div class="mt-8 bg-slate-900 rounded-2xl p-4 text-white hide-on-collapse transition-all duration-200 shadow-lg shadow-slate-900/20">
+                        <div class="mb-2 bg-white/10 w-8 h-8 rounded-lg flex items-center justify-center backdrop-blur-sm">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                         </div>
-                        <h3 class="font-bold text-sm mb-1 whitespace-nowrap">Try AI CashFund</h3>
-                        <p class="text-xs opacity-90 mb-3 whitespace-nowrap">3 Month Free Trial</p>
-                        <button class="w-full bg-white text-blue-600 text-xs font-bold py-2 rounded-lg">Try Now</button>
+                        <h3 class="font-bold text-sm mb-1 whitespace-nowrap">Upgrade to Pro</h3>
+                        <p class="text-xs text-slate-400 mb-3 whitespace-nowrap">Unlock AI insights</p>
+                        <button class="w-full bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold py-2 rounded-lg transition-colors">Try Free</button>
                     </div>
                 </div>
 
                 <!-- Profile -->
-                <div class="pt-4 border-t flex items-center gap-3">
-                    <img src="https://ui-avatars.com/api/?name=Fajar+Alexander&background=0D8ABC&color=fff" class="w-10 h-10 rounded-full flex-shrink-0">
+                <div class="pt-4 border-t border-gray-100 flex items-center gap-3">
+                    <img src="https://ui-avatars.com/api/?name=Fajar+Alexander&background=0f172a&color=fff" class="w-10 h-10 rounded-full flex-shrink-0 border-2 border-white shadow-sm">
                     <div class="hide-on-collapse overflow-hidden">
                         <p class="text-sm font-bold text-gray-800 whitespace-nowrap">Fajar Alexander</p>
-                        <p class="text-xs text-gray-500 whitespace-nowrap">fajar@gmail.com</p>
+                        <p class="text-xs text-gray-400 whitespace-nowrap">Admin Account</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- MAIN CONTENT AREA -->
-        <div class="flex-1 flex flex-col h-full overflow-hidden w-full relative">
+        <div class="flex-1 flex flex-col h-full overflow-hidden w-full relative bg-slate-50">
             <!-- Top Header -->
-            <header class="bg-white shadow-sm flex-shrink-0 z-40">
-                <div class="flex items-center justify-between px-6 py-4">
+            <header class="bg-white/80 backdrop-blur-md sticky top-0 z-40 border-b border-gray-100">
+                <div class="flex items-center justify-between px-8 py-4">
                     <div class="flex items-center gap-4">
                         <button id="menuBtn" onclick="toggleSidebar()" class="p-2 hover:bg-gray-100 rounded-lg lg:hidden">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                         </button>
-                        <h2 id="viewHeaderTitle" class="text-xl font-bold text-gray-800 heading-font">Overview Dashboard</h2>
+                        <h2 id="viewHeaderTitle" class="text-xl font-bold text-slate-800">Overview Dashboard</h2>
                     </div>
                     
-                    <div id="globalControls" class="hidden flex items-center gap-3">
-                        <div class="hidden md:flex items-center bg-gray-50 border rounded-lg px-3 py-2 text-sm text-gray-600">
-                            <span>Mon, 7 July 2025</span>
+                    <div class="flex items-center gap-4">
+                        <div class="hidden md:flex items-center gap-2 text-sm text-gray-500 bg-white border border-gray-200 px-3 py-1.5 rounded-lg shadow-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            <span id="currentDate">Dec 2025</span>
                         </div>
-                        <button class="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium">Export</button>
+                        <button class="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-lg shadow-slate-900/10">Export Report</button>
                     </div>
                 </div>
             </header>
 
             <!-- Dynamic Content Container -->
-            <main id="main-content" class="flex-1 overflow-auto p-6 bg-gray-50">
-                <!-- Content injects here -->
+            <main id="main-content" class="flex-1 overflow-auto p-4 md:p-8">
+                
+                <!-- VIEW 1: OVERVIEW DASHBOARD -->
+                <div id="view-dashboard" class="fade-in w-full pb-10">
+                    <!-- View Controls -->
+                    <div class="card-aesthetic flex flex-wrap items-center justify-between p-4 mb-8">
+                        <div class="flex items-center space-x-4 pl-2">
+                             <div class="flex flex-col">
+                                 <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Period</span>
+                                 <div class="flex items-center gap-2 cursor-pointer group">
+                                     <h3 class="text-2xl font-bold text-gray-800 group-hover:text-blue-600 transition-colors">March 2024</h3>
+                                     <svg class="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                 </div>
+                             </div>
+                        </div>
+                        
+                        <div class="flex items-center gap-4 mt-4 md:mt-0">
+                            <div class="flex bg-gray-100 p-1 rounded-xl">
+                                <button class="px-3 py-1 text-sm font-medium text-gray-500 rounded-lg hover:text-gray-900">Quarter</button>
+                                <button class="px-3 py-1 text-sm font-medium text-gray-900 bg-white rounded-lg shadow-sm">Month</button>
+                                <button class="px-3 py-1 text-sm font-medium text-gray-500 rounded-lg hover:text-gray-900">Week</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- KPIs -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <!-- Earnings -->
+                        <div class="card-aesthetic p-6 relative overflow-hidden group">
+                            <div class="absolute -right-4 -top-4 w-20 h-20 bg-emerald-50 rounded-full blur-xl group-hover:bg-emerald-100 transition-colors"></div>
+                            <div class="relative">
+                                <div class="flex justify-between items-start mb-4">
+                                    <p class="text-sm font-medium text-gray-500">Total Earnings</p>
+                                    <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-bold bg-emerald-50 text-emerald-600">+8.2%</span>
+                                </div>
+                                <h3 class="text-3xl font-bold text-gray-900 mb-1">₹12,000</h3>
+                                <div class="w-full bg-gray-100 rounded-full h-1 mt-3">
+                                    <div class="bg-emerald-500 h-1 rounded-full" style="width: 75%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Expenses -->
+                        <div class="card-aesthetic p-6 relative overflow-hidden group">
+                            <div class="absolute -right-4 -top-4 w-20 h-20 bg-rose-50 rounded-full blur-xl group-hover:bg-rose-100 transition-colors"></div>
+                            <div class="relative">
+                                <div class="flex justify-between items-start mb-4">
+                                    <p class="text-sm font-medium text-gray-500">Total Expenses</p>
+                                    <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-bold bg-rose-50 text-rose-600">+2.4%</span>
+                                </div>
+                                <h3 class="text-3xl font-bold text-gray-900 mb-1">₹3,450</h3>
+                                <div class="w-full bg-gray-100 rounded-full h-1 mt-3">
+                                    <div class="bg-rose-500 h-1 rounded-full" style="width: 35%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Net Balance -->
+                        <div class="card-aesthetic p-6 relative overflow-hidden group">
+                            <div class="absolute -right-4 -top-4 w-20 h-20 bg-blue-50 rounded-full blur-xl group-hover:bg-blue-100 transition-colors"></div>
+                            <div class="relative">
+                                <div class="flex justify-between items-start mb-4">
+                                    <p class="text-sm font-medium text-gray-500">Net Balance</p>
+                                    <div class="p-1.5 bg-blue-50 rounded-lg text-blue-600">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                                    </div>
+                                </div>
+                                <h3 class="text-3xl font-bold text-gray-900 mb-1">₹8,550</h3>
+                                <p class="text-xs text-gray-400 mt-2 font-medium">Safe profit margin</p>
+                            </div>
+                        </div>
+                        <!-- Current Balance -->
+                        <div class="card-aesthetic p-6 bg-slate-900 text-white relative overflow-hidden group border-none">
+                            <div class="absolute inset-0 bg-gradient-to-br from-indigo-600/30 to-purple-600/30 opacity-50"></div>
+                            <div class="relative z-10">
+                                <div class="flex justify-between items-start mb-4">
+                                    <p class="text-sm font-medium text-slate-300">Current Balance</p>
+                                    <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                                </div>
+                                <h3 class="text-3xl font-bold text-white mb-1">₹18,115</h3>
+                                <div class="flex items-center gap-2 mt-3">
+                                    <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
+                                    <span class="text-xs font-medium text-slate-300">Updated just now</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <div class="card-aesthetic p-8">
+                            <h3 class="text-xl font-bold text-gray-900 mb-6">Flow Analysis</h3>
+                            <div style="position: relative; height: 300px; width: 100%;">
+                                <canvas id="chart-overview-flow"></canvas>
+                            </div>
+                        </div>
+                        <div class="card-aesthetic p-8 flex flex-col justify-between">
+                            <h3 class="text-xl font-bold text-gray-900 mb-6">Expenses Breakdown</h3>
+                            <div class="flex flex-col sm:flex-row items-center gap-8 h-full">
+                                <div class="relative w-48 h-48 flex-shrink-0">
+                                    <canvas id="chart-overview-cat"></canvas>
+                                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                                        <span class="text-xs font-bold text-gray-400 uppercase">Total</span>
+                                        <span class="text-xl font-bold text-gray-900">₹3.4k</span>
+                                    </div>
+                                </div>
+                                <div class="w-full space-y-4">
+                                    <div class="flex justify-between items-center p-3 rounded-xl bg-gray-50 border border-gray-100">
+                                        <div class="flex items-center gap-3"><div class="w-3 h-3 rounded-full bg-slate-800"></div><span class="text-sm font-semibold text-gray-700">Operations</span></div>
+                                        <span class="text-sm font-bold text-gray-900">45%</span>
+                                    </div>
+                                    <div class="flex justify-between items-center p-3 rounded-xl bg-gray-50 border border-gray-100">
+                                        <div class="flex items-center gap-3"><div class="w-3 h-3 rounded-full bg-indigo-500"></div><span class="text-sm font-semibold text-gray-700">Marketing</span></div>
+                                        <span class="text-sm font-bold text-gray-900">30%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW 2: BUSINESS DASHBOARD -->
+                <div id="view-business" class="fade-in w-full pb-10 hidden">
+                    <!-- Top KPIs -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                        <div class="card-aesthetic p-6 rounded-[20px] relative overflow-hidden group">
+                            <div class="absolute -right-6 -top-6 w-24 h-24 bg-teal-50 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                            <div class="flex justify-between items-start mb-5 relative z-10">
+                                <span class="text-gray-500 text-sm font-semibold tracking-wide uppercase">Available Balance</span>
+                                <div class="p-2.5 bg-teal-50 rounded-xl border border-teal-100/50">
+                                    <svg class="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                                </div>
+                            </div>
+                            <h3 class="text-4xl font-bold text-gray-900 mt-1 tracking-tight">$75,876<span class="text-gray-400 text-2xl font-medium">.00</span></h3>
+                            <span class="text-teal-600 text-sm font-bold mt-2 block">+12% from last month</span>
+                        </div>
+                        <div class="card-aesthetic p-6 rounded-[20px] relative overflow-hidden group">
+                            <div class="flex justify-between items-start mb-5 relative z-10">
+                                <span class="text-gray-500 text-sm font-semibold tracking-wide uppercase">Inflows</span>
+                                <div class="p-2.5 bg-blue-50 rounded-xl">
+                                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                </div>
+                            </div>
+                            <h3 class="text-4xl font-bold text-gray-900 mt-1 tracking-tight">$15,876<span class="text-gray-400 text-2xl font-medium">.00</span></h3>
+                            <span class="text-teal-600 text-sm font-bold mt-2 block">+17% from last month</span>
+                        </div>
+                        <div class="card-aesthetic p-6 rounded-[20px] relative overflow-hidden group">
+                            <div class="flex justify-between items-start mb-5 relative z-10">
+                                <span class="text-gray-500 text-sm font-semibold tracking-wide uppercase">Outflows</span>
+                                <div class="p-2.5 bg-orange-50 rounded-xl">
+                                    <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                                </div>
+                            </div>
+                            <h3 class="text-4xl font-bold text-gray-900 mt-1 tracking-tight">$5,876<span class="text-gray-400 text-2xl font-medium">.00</span></h3>
+                            <span class="text-red-500 text-sm font-bold mt-2 block">12% from last month</span>
+                        </div>
+                    </div>
+
+                    <!-- Business Charts -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                        <div class="lg:col-span-2 card-aesthetic p-6 rounded-[24px]">
+                            <h3 class="text-lg font-bold text-gray-800 mb-4">Cashflow Analysis</h3>
+                            <div style="position: relative; height: 300px; width: 100%;">
+                                <canvas id="chart-business-main"></canvas>
+                            </div>
+                        </div>
+                        <div class="card-aesthetic p-6 rounded-[24px]">
+                            <h3 class="text-lg font-bold text-gray-800 mb-4">Outflows Breakdown</h3>
+                            <div style="position: relative; height: 200px; width: 100%;">
+                                <canvas id="chart-business-donut"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW 3: CALENDAR -->
+                <div id="view-calendar" class="fade-in w-full pb-10 hidden h-full">
+                    <div class="card-aesthetic p-8 rounded-[32px] flex flex-col h-auto min-h-[600px]">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+                            <div class="flex items-center space-x-4">
+                                <div class="p-3 bg-indigo-50 rounded-2xl">
+                                    <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-2xl font-bold text-gray-900 tracking-tight">December 2025</h3>
+                                    <p class="text-gray-400 text-sm font-medium">3 Events today • 12 upcoming</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-7 mb-4 px-2">
+                            <div class="text-gray-400 text-xs font-bold uppercase tracking-widest text-center">Mon</div>
+                            <div class="text-gray-400 text-xs font-bold uppercase tracking-widest text-center">Tue</div>
+                            <div class="text-gray-400 text-xs font-bold uppercase tracking-widest text-center">Wed</div>
+                            <div class="text-gray-400 text-xs font-bold uppercase tracking-widest text-center">Thu</div>
+                            <div class="text-gray-400 text-xs font-bold uppercase tracking-widest text-center">Fri</div>
+                            <div class="text-gray-400 text-xs font-bold uppercase tracking-widest text-center text-orange-400">Sat</div>
+                            <div class="text-gray-400 text-xs font-bold uppercase tracking-widest text-center text-orange-400">Sun</div>
+                        </div>
+
+                        <div id="calendar-grid" class="grid grid-cols-7 grid-rows-5 gap-2 h-full flex-grow">
+                            <!-- JS Injection -->
+                        </div>
+                    </div>
+                </div>
+
             </main>
         </div>
     </div>
 
-    <!-- Main Logic -->
-    <script src="script.js"></script>
+    <!-- MAIN LOGIC & CHART RENDERING -->
+    <script>
+        // 1. Sidebar Logic
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const icon = document.getElementById('collapseIcon');
+            sidebar.classList.toggle('w-64');
+            sidebar.classList.toggle('sidebar-collapsed');
+        }
+
+        // 2. Tab Switching Logic
+        function switchTab(tabName) {
+            // Update Navigation UI
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                if(item.id === 'nav-' + tabName) {
+                    item.classList.remove('nav-inactive');
+                    item.classList.add('nav-active');
+                } else {
+                    item.classList.remove('nav-active');
+                    item.classList.add('nav-inactive');
+                }
+            });
+
+            // Update Header Title
+            const titles = {
+                'dashboard': 'Overview Dashboard',
+                'business': 'Business Intelligence',
+                'calendar': 'Schedule & Events'
+            };
+            document.getElementById('viewHeaderTitle').innerText = titles[tabName];
+
+            // Toggle Views
+            document.getElementById('view-dashboard').classList.add('hidden');
+            document.getElementById('view-business').classList.add('hidden');
+            document.getElementById('view-calendar').classList.add('hidden');
+
+            const activeView = document.getElementById('view-' + tabName);
+            activeView.classList.remove('hidden');
+            
+            // Re-trigger fade animation
+            activeView.classList.remove('fade-in');
+            void activeView.offsetWidth; // Trigger reflow
+            activeView.classList.add('fade-in');
+        }
+
+        // 3. Chart Initialization (Runs on Load)
+        document.addEventListener('DOMContentLoaded', function() {
+            // Global Chart Defaults
+            Chart.defaults.font.family = "'Afacad', sans-serif";
+            Chart.defaults.color = '#94a3b8';
+
+            /* --- OVERVIEW CHARTS --- */
+            const ctxFlow = document.getElementById('chart-overview-flow').getContext('2d');
+            const gradEarn = ctxFlow.createLinearGradient(0,0,0,300); gradEarn.addColorStop(0, '#10b981'); gradEarn.addColorStop(1, '#059669');
+            const gradExp = ctxFlow.createLinearGradient(0,0,0,300); gradExp.addColorStop(0, '#ef4444'); gradExp.addColorStop(1, '#dc2626');
+            
+            new Chart(ctxFlow, {
+                type: 'bar',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    datasets: [
+                        { label: 'Earnings', data: [2800, 3500, 2100, 3600], backgroundColor: gradEarn, borderRadius: 6 },
+                        { label: 'Expenses', data: [1200, 800, 950, 500], backgroundColor: gradExp, borderRadius: 6 }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top', align: 'end' } }, scales: { x: { grid: { display: false } }, y: { border: { display: false }, grid: { borderDash: [4, 4] } } } }
+            });
+
+            const ctxCat = document.getElementById('chart-overview-cat').getContext('2d');
+            new Chart(ctxCat, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Operations', 'Marketing', 'Other'],
+                    datasets: [{ data: [45, 30, 25], backgroundColor: ['#1e293b', '#6366f1', '#e2e8f0'], borderWidth: 0 }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, cutout: '80%', plugins: { legend: { display: false } } }
+            });
+
+            /* --- BUSINESS CHARTS --- */
+            const ctxBusMain = document.getElementById('chart-business-main').getContext('2d');
+            const gradTeal = ctxBusMain.createLinearGradient(0, 0, 0, 400); gradTeal.addColorStop(0, 'rgba(13, 148, 136, 0.2)'); gradTeal.addColorStop(1, 'rgba(13, 148, 136, 0)');
+            new Chart(ctxBusMain, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{ label: 'Cashflow', data: [12000, 19000, 15000, 25000, 22000, 30000], borderColor: '#0f766e', backgroundColor: gradTeal, fill: true, tension: 0.4 }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { border: { display: false }, grid: { borderDash: [5, 5] } } } }
+            });
+
+            const ctxBusDonut = document.getElementById('chart-business-donut').getContext('2d');
+            new Chart(ctxBusDonut, {
+                type: 'doughnut',
+                data: { labels: ['Vendor', 'Salary'], datasets: [{ data: [55, 45], backgroundColor: ['#1e293b', '#14b8a6'], borderWidth: 0 }] },
+                options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { display: false } } }
+            });
+
+            /* --- CALENDAR LOGIC --- */
+            renderCalendar();
+        });
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendar-grid');
+            const eventTypes = [
+                { title: 'Tax Review', color: 'bg-red-50 text-red-700 border-red-100', dot: 'bg-red-500' },
+                { title: 'Payout In', color: 'bg-teal-50 text-teal-700 border-teal-100', dot: 'bg-teal-500' },
+                { title: 'Client Call', color: 'bg-indigo-50 text-indigo-700 border-indigo-100', dot: 'bg-indigo-500' }
+            ];
+            let html = '';
+            for(let i=1; i<=31; i++) {
+                const isToday = i === 14; 
+                const hasEvent = Math.random() > 0.7;
+                let eventHtml = '';
+                
+                if(hasEvent) {
+                    const type = eventTypes[Math.floor(Math.random()*3)];
+                    eventHtml = `<div class="event-item group/event relative mt-1"><div class="flex items-center gap-1.5 px-2 py-1 rounded border ${type.color} text-[10px] font-bold truncate"><div class="w-1 h-1 rounded-full ${type.dot}"></div>${type.title}</div></div>`;
+                }
+
+                html += `<div class="calendar-cell flex flex-col p-2 min-h-[100px] border border-gray-50 rounded-2xl bg-white ${isToday ? 'ring-2 ring-indigo-500' : ''}"><span class="text-sm font-semibold text-gray-400 mb-1">${i}</span>${eventHtml}</div>`;
+            }
+            grid.innerHTML = html;
+        }
+    </script>
 </body>
 </html>
