@@ -1,88 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finance Dashboard Component</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Import Afacad Font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Afacad:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <style>
-        body {
-            font-family: 'Afacad', sans-serif;
-            background-color: #F8FAFC; /* Slate 50 */
-            color: #1e293b;
-        }
-
-        /* Fade Animation */
-        .fade-in {
-            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* The "Cool" Card Style */
-        .aesthetic-card {
-            background-color: white;
-            border-radius: 1.5rem; /* rounded-3xl */
-            box-shadow: 
-                0 4px 6px -1px rgba(0, 0, 0, 0.02), 
-                0 10px 15px -3px rgba(0, 0, 0, 0.04),
-                0 0 0 1px rgba(0,0,0,0.02); /* Subtle outlay ring */
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .aesthetic-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 
-                0 20px 25px -5px rgba(0, 0, 0, 0.05), 
-                0 8px 10px -6px rgba(0, 0, 0, 0.01),
-                0 0 0 1px rgba(0,0,0,0.04);
-        }
-
-        /* Custom Segmented Control */
-        .segment-control {
-            background-color: #f1f5f9;
-            padding: 0.25rem;
-            border-radius: 0.75rem;
-            display: inline-flex;
-            position: relative;
-        }
-        
-        .segment-btn {
-            padding: 0.375rem 1rem;
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: #64748b;
-            transition: all 0.2s;
-        }
-        
-        .segment-btn.active {
-            background-color: white;
-            color: #0f172a;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-            font-weight: 600;
-        }
-    </style>
-</head>
-<body class="p-6 md:p-10">
-
-<div class="fade-in w-full max-w-7xl mx-auto pb-10">
-    
+<div class="fade-in w-full pb-10">
     <!-- View Controls -->
-    <div class="aesthetic-card flex flex-wrap items-center justify-between p-4 mb-8">
+    <div class="card-aesthetic flex flex-wrap items-center justify-between p-4 mb-8">
         <div class="flex items-center space-x-4 pl-2">
              <div class="flex flex-col">
                  <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Period</span>
@@ -94,22 +12,18 @@
         </div>
         
         <div class="flex items-center gap-4 mt-4 md:mt-0">
-            <div class="segment-control">
-                <button class="segment-btn hover:text-gray-900">Quarter</button>
-                <button class="segment-btn active">Month</button>
-                <button class="segment-btn hover:text-gray-900">Week</button>
+            <div class="flex bg-gray-100 p-1 rounded-xl">
+                <button class="px-3 py-1 text-sm font-medium text-gray-500 rounded-lg hover:text-gray-900">Quarter</button>
+                <button class="px-3 py-1 text-sm font-medium text-gray-900 bg-white rounded-lg shadow-sm">Month</button>
+                <button class="px-3 py-1 text-sm font-medium text-gray-500 rounded-lg hover:text-gray-900">Week</button>
             </div>
-            <button class="p-2.5 rounded-xl bg-gray-900 text-white hover:bg-gray-800 transition-colors shadow-lg shadow-gray-900/20">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-            </button>
         </div>
     </div>
 
     <!-- KPIs -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        
         <!-- Earnings -->
-        <div class="aesthetic-card p-6 relative overflow-hidden group">
+        <div class="card-aesthetic p-6 relative overflow-hidden group">
             <div class="absolute -right-4 -top-4 w-20 h-20 bg-emerald-50 rounded-full blur-xl group-hover:bg-emerald-100 transition-colors"></div>
             <div class="relative">
                 <div class="flex justify-between items-start mb-4">
@@ -122,9 +36,8 @@
                 </div>
             </div>
         </div>
-
         <!-- Expenses -->
-        <div class="aesthetic-card p-6 relative overflow-hidden group">
+        <div class="card-aesthetic p-6 relative overflow-hidden group">
             <div class="absolute -right-4 -top-4 w-20 h-20 bg-rose-50 rounded-full blur-xl group-hover:bg-rose-100 transition-colors"></div>
             <div class="relative">
                 <div class="flex justify-between items-start mb-4">
@@ -137,9 +50,8 @@
                 </div>
             </div>
         </div>
-
         <!-- Net Balance -->
-        <div class="aesthetic-card p-6 relative overflow-hidden group">
+        <div class="card-aesthetic p-6 relative overflow-hidden group">
             <div class="absolute -right-4 -top-4 w-20 h-20 bg-blue-50 rounded-full blur-xl group-hover:bg-blue-100 transition-colors"></div>
             <div class="relative">
                 <div class="flex justify-between items-start mb-4">
@@ -152,12 +64,9 @@
                 <p class="text-xs text-gray-400 mt-2 font-medium">Safe profit margin</p>
             </div>
         </div>
-
-        <!-- Current Balance (Highlighted) -->
-        <div class="aesthetic-card p-6 bg-slate-900 text-white relative overflow-hidden group ring-0 border-none">
-            <!-- Decorative gradient -->
+        <!-- Current Balance -->
+        <div class="card-aesthetic p-6 bg-slate-900 text-white relative overflow-hidden group border-none">
             <div class="absolute inset-0 bg-gradient-to-br from-indigo-600/30 to-purple-600/30 opacity-50"></div>
-            
             <div class="relative z-10">
                 <div class="flex justify-between items-start mb-4">
                     <p class="text-sm font-medium text-slate-300">Current Balance</p>
@@ -174,132 +83,33 @@
 
     <!-- Charts -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        
-        <!-- Spending vs Earnings -->
-        <div class="aesthetic-card p-8">
-            <div class="flex justify-between items-center mb-6">
-                <div>
-                    <h3 class="text-xl font-bold text-gray-900">Flow Analysis</h3>
-                    <p class="text-sm text-gray-400">Income vs Expenses</p>
-                </div>
-                <button class="p-2 bg-gray-50 hover:bg-gray-100 rounded-lg text-gray-400 transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/></svg>
-                </button>
-            </div>
+        <div class="card-aesthetic p-8">
+            <h3 class="text-xl font-bold text-gray-900 mb-6">Flow Analysis</h3>
             <div style="position: relative; height: 300px; width: 100%;">
-                <!-- Note: Using Bar chart logic for 'Spending vs Earnings' as it visualizes comparison better than donut -->
-                <canvas id="donutChart"></canvas>
+                <canvas id="chart-overview-flow"></canvas>
             </div>
         </div>
-
-        <!-- Category Breakdown -->
-        <div class="aesthetic-card p-8 flex flex-col justify-between">
-            <div>
-                <h3 class="text-xl font-bold text-gray-900 mb-1">Breakdown</h3>
-                <p class="text-sm text-gray-400 mb-6">Expenses by category</p>
-            </div>
-            
+        <div class="card-aesthetic p-8 flex flex-col justify-between">
+            <h3 class="text-xl font-bold text-gray-900 mb-6">Expenses Breakdown</h3>
             <div class="flex flex-col sm:flex-row items-center gap-8 h-full">
                 <div class="relative w-48 h-48 flex-shrink-0">
-                    <canvas id="categoryChart"></canvas>
-                    <!-- Center Text overlay -->
+                    <canvas id="chart-overview-cat"></canvas>
                     <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                         <span class="text-xs font-bold text-gray-400 uppercase">Total</span>
                         <span class="text-xl font-bold text-gray-900">₹3.4k</span>
                     </div>
                 </div>
-
-                <!-- Custom Legend -->
                 <div class="w-full space-y-4">
                     <div class="flex justify-between items-center p-3 rounded-xl bg-gray-50 border border-gray-100">
-                        <div class="flex items-center gap-3">
-                            <div class="w-3 h-3 rounded-full bg-slate-800"></div>
-                            <span class="text-sm font-semibold text-gray-700">Operations</span>
-                        </div>
+                        <div class="flex items-center gap-3"><div class="w-3 h-3 rounded-full bg-slate-800"></div><span class="text-sm font-semibold text-gray-700">Operations</span></div>
                         <span class="text-sm font-bold text-gray-900">45%</span>
                     </div>
                     <div class="flex justify-between items-center p-3 rounded-xl bg-gray-50 border border-gray-100">
-                        <div class="flex items-center gap-3">
-                            <div class="w-3 h-3 rounded-full bg-indigo-500"></div>
-                            <span class="text-sm font-semibold text-gray-700">Marketing</span>
-                        </div>
+                        <div class="flex items-center gap-3"><div class="w-3 h-3 rounded-full bg-indigo-500"></div><span class="text-sm font-semibold text-gray-700">Marketing</span></div>
                         <span class="text-sm font-bold text-gray-900">30%</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
 </div>
-
-<!-- Chart Script -->
-<script>
-    Chart.defaults.font.family = "'Afacad', sans-serif";
-    Chart.defaults.color = '#94a3b8';
-
-    // 1. Spending vs Earnings (Bar Chart for clear comparison)
-    const ctxFlow = document.getElementById('donutChart').getContext('2d');
-    
-    // Gradients
-    const gradEarn = ctxFlow.createLinearGradient(0,0,0,300);
-    gradEarn.addColorStop(0, '#10b981'); gradEarn.addColorStop(1, '#059669'); // Emerald
-    
-    const gradExp = ctxFlow.createLinearGradient(0,0,0,300);
-    gradExp.addColorStop(0, '#ef4444'); gradExp.addColorStop(1, '#dc2626'); // Red
-
-    new Chart(ctxFlow, {
-        type: 'bar',
-        data: {
-            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
-            datasets: [
-                {
-                    label: 'Earnings',
-                    data: [2800, 3500, 2100, 3600],
-                    backgroundColor: gradEarn,
-                    borderRadius: 6,
-                    barPercentage: 0.6
-                },
-                {
-                    label: 'Expenses',
-                    data: [1200, 800, 950, 500],
-                    backgroundColor: gradExp,
-                    borderRadius: 6,
-                    barPercentage: 0.6
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { position: 'top', align: 'end', labels: { usePointStyle: true, boxWidth: 6 } } },
-            scales: {
-                y: { beginAtZero: true, grid: { color: '#f1f5f9', borderDash: [4, 4] }, border: { display: false } },
-                x: { grid: { display: false }, border: { display: false } }
-            }
-        }
-    });
-
-    // 2. Category Breakdown (Doughnut)
-    const ctxCat = document.getElementById('categoryChart').getContext('2d');
-    new Chart(ctxCat, {
-        type: 'doughnut',
-        data: {
-            labels: ['Operations', 'Marketing', 'Other'],
-            datasets: [{
-                data: [45, 30, 25],
-                backgroundColor: ['#1e293b', '#6366f1', '#e2e8f0'], // Slate 800, Indigo 500, Slate 200
-                borderWidth: 0,
-                hoverOffset: 4
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            cutout: '80%',
-            plugins: { legend: { display: false } }
-        }
-    });
-</script>
-
-</body>
-</html>
